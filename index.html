@@ -3,217 +3,89 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Goatef Store - Tournament</title>
+<title>GoatEFStore 3D Tournaments</title>
 <style>
-/* ----- General ----- */
-*{margin:0;padding:0;box-sizing:border-box;font-family:'Poppins',sans-serif;}
-body{background:#f0f2f5;color:#333;}
-h1,h2,h3{color:#1f1f1f;text-align:center;margin-bottom:15px;}
-section{padding:60px 20px;min-height:300px;}
-
-/* ----- Header ----- */
-header{display:flex;justify-content:space-between;align-items:center;padding:10px 20px;background:#1f1f1f;color:white;position:fixed;width:100%;z-index:100;}
-header .logo{font-weight:bold;font-size:1.5rem;}
-nav ul{list-style:none;display:flex;gap:20px;transition:all 0.3s ease;}
-nav ul li{cursor:pointer;transition:0.3s;}
-nav ul li:hover{color: gold;}
-.menu-icon{display:none;font-size:1.8rem;cursor:pointer;}
-
-/* ----- Slider ----- */
-.slider{height:200px;display:flex;justify-content:center;align-items:center;position:relative;overflow:hidden;margin-top:70px;background:#333;color:white;font-size:1.2rem;text-align:center;}
-.slide{position:absolute;opacity:0;transition:all 0.5s ease;width:100%;padding:20px;}
-.slide.active{opacity:1;transform:translateX(0);}
-
-/* ----- Tournament ----- */
-.division-container{display:flex;justify-content:space-around;margin-bottom:30px;flex-wrap:wrap;}
-.division{display:flex;flex-wrap:wrap;justify-content:center;margin-top:10px;}
-.team{padding:8px 12px;margin:4px;border-radius:6px;background:#eee;border:1px solid #333;cursor:pointer;transition:0.3s;}
-.team:hover{background:#ffd700;transform:scale(1.1);}
-.winner{background: gold;font-weight:bold;}
-#admin-panel{margin-bottom:30px;text-align:center;}
-input, select{padding:5px;margin-right:5px;}
-button{padding:5px 10px;}
-
-/* ----- Footer ----- */
-footer{background:#1f1f1f;color:white;text-align:center;padding:20px;margin-top:20px;}
-footer .icon{width:24px;height:24px;margin-top:10px;cursor:pointer;}
-
-/* ----- Responsive Menu ----- */
-@media(max-width:768px){
-nav ul{display:none;flex-direction:column;background:#1f1f1f;position:absolute;top:50px;right:20px;padding:10px;border-radius:8px;}
-nav ul.show{display:flex;}
-.menu-icon{display:block;}
+body {
+  margin:0; font-family:sans-serif; perspective:1000px; background:#111; color:#fff;
 }
+.cube {
+  width: 300px; height: 300px; position:relative; margin:100px auto;
+  transform-style: preserve-3d; transition: transform 1s;
+}
+.face {
+  position:absolute; width:300px; height:300px; background:#222; border:2px solid #fff;
+  display:flex; align-items:center; justify-content:center; font-size:20px; text-align:center;
+}
+.front  { transform: rotateY(0deg) translateZ(150px);}
+.back   { transform: rotateY(180deg) translateZ(150px);}
+.right  { transform: rotateY(90deg) translateZ(150px);}
+.left   { transform: rotateY(-90deg) translateZ(150px);}
+.top    { transform: rotateX(90deg) translateZ(150px);}
+.bottom { transform: rotateX(-90deg) translateZ(150px);}
+
+button { margin-top:20px; padding:10px 20px; cursor:pointer; }
+
+.tournament-list { margin-top:20px; text-align:left; }
+.tournament { margin-bottom:10px; padding:10px; border:1px solid #fff; border-radius:10px; }
 </style>
 </head>
 <body>
 
-<!-- Header -->
-<header>
-  <div class="logo">GOATEF STORE</div>
-  <nav>
-    <ul id="menu">
-      <li data-target="home">Home</li>
-      <li data-target="tournament">Tournament</li>
-      <li data-target="groups">Groups</li>
-      <li data-target="contact">Contact</li>
-    </ul>
-    <div class="menu-icon" id="menuIcon">&#9776;</div>
-  </nav>
-</header>
-
-<!-- Slider Section -->
-<section class="slider" id="home">
-  <div class="slide active">Kerala's Most Trustable eFootball Store</div>
-  <div class="slide">Buy & Sell Accounts Safely</div>
-  <div class="slide">Follow us on Instagram @goatefstore</div>
-</section>
-
-<!-- Tournament Section -->
-<section id="tournament">
-<h2>Tournament</h2>
-<div id="admin-panel">
-  <input type="text" id="teamName" placeholder="Team Name">
-  <select id="division">
-    <option value="A">Division A</option>
-    <option value="B">Division B</option>
-  </select>
-  <button onclick="addTeam()">Add Team</button>
+<div class="cube" id="cube">
+  <div class="face front">Welcome! <br><button onclick="showTournaments()">Go to Tournaments</button></div>
+  <div class="face back">Admin Panel</div>
+  <div class="face right">Info</div>
+  <div class="face left">Contact</div>
+  <div class="face top">Leaderboard</div>
+  <div class="face bottom">Footer</div>
 </div>
 
-<div class="division-container">
-  <div>
-    <h3>Division A</h3>
-    <div id="divA" class="division"></div>
-  </div>
-  <div>
-    <h3>Division B</h3>
-    <div id="divB" class="division"></div>
+<div id="tournaments" style="display:none; text-align:center;">
+  <h2>Tournaments</h2>
+  <div class="tournament-list" id="tournamentList"></div>
+
+  <!-- Admin add tournament -->
+  <div id="adminPanel">
+    <h3>Add Tournament (Admin)</h3>
+    <input type="text" id="tournamentName" placeholder="Tournament Name">
+    <button onclick="addTournament()">Add</button>
   </div>
 </div>
 
-<h3>Grand Final</h3>
-<div id="final" class="division"></div>
-</section>
-
-<!-- Groups Section -->
-<section id="groups">
-<h2>Groups</h2>
-<p style="text-align:center;">Group stage information will be displayed here.</p>
-</section>
-
-<!-- Contact Section -->
-<section id="contact">
-<h2>Contact</h2>
-<p style="text-align:center;">Instagram: <a href="https://instagram.com/goatefstore" target="_blank">@goatefstore</a></p>
-</section>
-
-<!-- Footer -->
-<footer>
-<p>Kerala's Most Trustable eFootball Store | Buy & Sell Accounts | Follow us on Instagram</p>
-<img src="https://cdn.simpleicons.org/instagram/ffffff" alt="Instagram" class="icon" onclick="window.open('https://instagram.com/goatefstore','_blank')">
-</footer>
-
-<!-- JS -->
 <script>
-/* ---------- MENU ---------- */
-const menuIcon=document.getElementById('menuIcon');
-const menu=document.getElementById('menu');
-menuIcon.addEventListener('click', ()=>menu.classList.toggle('show'));
-document.querySelectorAll('#menu li').forEach(li=>{
-  li.addEventListener('click',()=>{
-    const target=document.getElementById(li.dataset.target);
-    target.scrollIntoView({behavior:'smooth'});
-    menu.classList.remove('show');
-  });
-});
-
-/* ---------- SLIDER ---------- */
-let current=0;
-const slides=document.querySelectorAll('.slide');
-setInterval(()=>{
-  slides[current].classList.remove('active');
-  current=(current+1)%slides.length;
-  slides[current].classList.add('active');
-},3000);
-
-/* ---------- TOURNAMENT KV LOGIC ---------- */
-// Replace with your Worker KV URL
-const WORKER_URL = 'https://your-worker-subdomain.workers.dev';
-
-let teamsA=[], teamsB=[];
-
-async function loadTeams(){
-  try{
-    const res=await fetch(WORKER_URL);
-    const allTeams=await res.json();
-    teamsA = allTeams.filter(t=>t.division==='A').map(t=>t.name);
-    teamsB = allTeams.filter(t=>t.division==='B').map(t=>t.name);
-    renderDivision(teamsA,'divA');
-    renderDivision(teamsB,'divB');
-    checkFinal();
-  } catch(err){ console.error('Failed to load teams',err); }
+// Cube rotation example (3D effect)
+let cube = document.getElementById("cube");
+function rotateCube(yDeg=0) {
+  cube.style.transform = `rotateY(${yDeg}deg)`;
 }
 
-async function addTeam(){
-  const name=document.getElementById('teamName').value.trim();
-  const div=document.getElementById('division').value;
-  if(!name) return alert('Enter team name');
-  const newTeams=[{name,division:div}]
-    .concat(teamsA.map(n=>({name:n,division:'A'})), teamsB.map(n=>({name:n,division:'B'})));
-  await fetch(WORKER_URL,{
-    method:'POST',
-    headers:{'Content-Type':'application/json'},
-    body: JSON.stringify(newTeams)
-  });
-  document.getElementById('teamName').value='';
-  loadTeams();
+// Show tournaments
+function showTournaments() {
+  document.getElementById("cube").style.display = 'none';
+  document.getElementById("tournaments").style.display = 'block';
+  loadTournaments();
 }
 
-function renderDivision(list, elId){
-  const el=document.getElementById(elId);
-  el.innerHTML='';
-  list.forEach(t=>{
-    const div=document.createElement('div');
-    div.className='team';
-    div.textContent=t;
-    div.onclick=()=>pickWinner(t,elId);
-    el.appendChild(div);
+// Tournament storage
+function loadTournaments() {
+  let tournaments = JSON.parse(localStorage.getItem('tournaments') || "[]");
+  let list = document.getElementById('tournamentList');
+  list.innerHTML = '';
+  tournaments.forEach((t,i) => {
+    list.innerHTML += `<div class="tournament">${t.name}<br>Points: ${t.points || 0}</div>`;
   });
 }
 
-let winnersA=[], winnersB=[], finalWinner=null;
-
-function pickWinner(team, divId){
-  if(divId==='divA'){ winnersA=[team]; highlightWinner(team,'divA'); advanceRound('A'); }
-  if(divId==='divB'){ winnersB=[team]; highlightWinner(team,'divB'); advanceRound('B'); }
-  if(divId==='final'){ finalWinner=team; highlightWinner(team,'final'); alert('🏆 Winner: '+finalWinner); }
+function addTournament() {
+  let name = document.getElementById('tournamentName').value;
+  if(!name) return alert("Enter a tournament name");
+  let tournaments = JSON.parse(localStorage.getItem('tournaments') || "[]");
+  tournaments.push({name, points:0});
+  localStorage.setItem('tournaments', JSON.stringify(tournaments));
+  document.getElementById('tournamentName').value = '';
+  loadTournaments();
 }
-
-function highlightWinner(team, elId){
-  const divs=document.getElementById(elId).children;
-  for(let d of divs) d.classList.toggle('winner', d.textContent===team);
-}
-
-function advanceRound(div){
-  if(div==='A'){ teamsA=winnersA; winnersA=[]; renderDivision(teamsA,'divA'); }
-  if(div==='B'){ teamsB=winnersB; winnersB=[]; renderDivision(teamsB,'divB'); }
-  checkFinal();
-}
-
-function checkFinal(){
-  if(teamsA.length===1 && teamsB.length===1){
-    const fDiv=document.getElementById('final');
-    fDiv.innerHTML='';
-    [teamsA[0],teamsB[0]].forEach(t=>{
-      const div=document.createElement('div'); div.className='team'; div.textContent=t;
-      div.onclick=()=>pickWinner(t,'final'); fDiv.appendChild(div);
-    });
-  }
-}
-
-// Initial load
-loadTeams();
 </script>
+
 </body>
 </html>
